@@ -44,10 +44,10 @@ class Recording extends PureComponent {
 		return this.state.data[counterClass];
 	}
 
-  getAverageSpeed() {
-    if (isNaN(this.state.data.averageSpeed) || !this.state.data.averageSpeed) return 1;
-    return (parseFloat(this.state.data.averageSpeed) * 3.6).toFixed(1);
-  }
+	getAverageSpeed(speed) {
+		if (isNaN(speed) || !speed) return 0;
+		return (parseFloat(speed) * 3.6).toFixed(1);
+	}
 
 	renderDateEnd(dateEnd, active = false) {
 		if (!active) {
@@ -140,17 +140,16 @@ class Recording extends PureComponent {
 								{/* ИТОГО */}
 								<div className={`flex flex-col counter-area bg-gray-200 m-2 rounded p-4`}>
 									<div className="flex items-center">
-										<div className="ml-2 font-bold">Итого</div>
+										<div className="ml-2 font-bold">Средняя скорость, км/ч</div>
 									</div>
 									<div className="flex flex-initial flex-wrap mt-5 w-64">
 										{this.DISPLAY_CLASSES.slice(0, Math.min(this.DISPLAY_CLASSES.length, 6)).map((counterClass) => (
 											<div className="flex w-16 m-1 items-center justify-center" key={counterClass.class}>
-												<h4 className="mr-2">{this.getTotalCount(counterClass.class)}</h4>
+												<h4 className="mr-2">{this.getAverageSpeed(this.state.data.averageSpeed[counterClass.class])}</h4>
 												<OpenMoji hexcode={counterClass.hexcode} class={counterClass.class} />
 											</div>
 										))}
 									</div>
-									<div>Средняя скорость: {this.getAverageSpeed()} км/ч</div>
 								</div>
 								{/* Конец ИТОГО */}
 							</div>

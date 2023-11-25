@@ -1,6 +1,6 @@
 const DBManager = require("../db/DBManager");
 
-const DISTANCE = 20
+const DISTANCE = 20;
 
 async function getRecords(req, res) {
 	const data = await DBManager.getRecordings();
@@ -23,7 +23,11 @@ async function getRecordsStatistic(req, res) {
 			totalObjects: 0,
 			totalItemsTracked: record.trackerSummary.totalItemsTracked || 0,
 			totalAreas: Object.keys(record.areas).length,
-      averageSpeed: 1
+			averageSpeed: {
+				car: 0,
+				bus: 0,
+				truck: 0,
+			},
 		};
 
 		Object.entries(record.counterSummary).forEach(([areaId, areaData]) => {
@@ -52,6 +56,9 @@ function countSpeed(carsArray) {
 		carsObj[id] = filteredCars;
 	});
 	const carTimes = [];
+	const busTimes = [];
+	const truckTimes = [];
+
 	Object.entries(carsObj).forEach(([carId, carData]) => {
 		if (carData.length > 1) {
 			const minTimeCar = carData.reduce((min, current) => {
@@ -69,13 +76,21 @@ function countSpeed(carsArray) {
 			const minDate = new Date(minTimeCar.timestamp);
 			const maxDate = new Date(maxTimeCar.timestamp);
 			const diff = (maxDate.getTime() - minDate.getTime()) / 1000;
-			carTimes.push(diff);
+			if (carData[0].name == "car") carTimes.push(diff);
+			if (carData[0].name == "bus") busTimes.push(diff);
+			if (carData[0].name == "truck") truckTimes.push(diff);
 		}
 	});
 
-  const carSpeed = carTimes.map(time => DISTANCE / time)
-  
-	return carSpeed.reduce((a, b) => a + b, 0) / carSpeed.length;
+	const carSpeed = carTimes.map((time) => DISTANCE / time);
+	const busSpeed = busTimes.map((time) => DISTANCE / time);
+	const truckSpeed = truckTimes.map((time) => DISTANCE / time);
+
+	return {
+		car: carSpeed.reduce((a, b) => a + b, 0) / carSpeed.length || 0,
+		bus: busSpeed.reduce((a, b) => a + b, 0) / busSpeed.length || 0,
+		truck: truckSpeed.reduce((a, b) => a + b, 0) / truckSpeed.length || 0,
+	};
 }
 
 module.exports = { getRecords, getRecordsStatistic };
