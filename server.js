@@ -1045,6 +1045,7 @@ app.prepare().then(() => {
 	// ==================================== RECORDS ====================================
 	express.get("/api/recordsinfo", DBMiddleware.getRecords);
 	express.get("/api/recordstats", DBMiddleware.getRecordsStatistic);
+	express.get("/api/counter", DBMiddleware.getCounterFile);
 
 	express.use("/api/doc", serveStatic("apidoc"));
 

@@ -1,4 +1,6 @@
-FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
+
+ENV DEBIAN_FRONTEND noninteractive
 
 # Install  Gstreamer and OpenCV Pre-requisite libs
 RUN  apt-get update -y && apt-get install -y \
