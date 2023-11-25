@@ -59,9 +59,9 @@ class UIControls extends Component {
 									Трекер путей
 								</button>
 							)}
-							<button className={`btn btn-default rounded-r`} onClick={showDialog}>
+							{/* <button className={`btn btn-default rounded-r`} onClick={showDialog}>
 								Добавить видео
-							</button>
+							</button> */}
 						</div>
 						<div className="nav-right mt-2 mr-2 flex">
 							<button className={`btn btn-default shadow rounded-l ${this.props.mode === MODE.DATAVIEW ? "btn-default--active" : ""}`} onClick={() => this.props.dispatch(setMode(MODE.DATAVIEW))}>

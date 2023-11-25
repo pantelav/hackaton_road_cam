@@ -83,8 +83,7 @@ class MainPage extends React.PureComponent {
 
 	render() {
 		return (
-			<div className="main-page" onDragOver={(event) => event.preventDefault()} onDragStart={(event) => event.preventDefault()}>
-				{/* onDrop={(event) => this.onDrop(event)} */}
+			<div className="main-page" onDragOver={(event) => event.preventDefault()} onDrop={(event) => this.onDrop(event)} onDragStart={(event) => event.preventDefault()}>
 				{this.props.deviceOrientation === "portrait" && <AskLandscape />}
 				{!this.props.isListeningToYOLO && <InitializingView requestedFileRecording={this.props.requestedFileRecording} droppedFile={this.state.droppedFile} />}
 				{this.props.isListeningToYOLO && this.state.droppedFile && <InitializingView requestedFileRecording={this.props.requestedFileRecording} droppedFile={this.state.droppedFile} />}
@@ -101,7 +100,7 @@ class MainPage extends React.PureComponent {
 						{/* Hide it on pathview mode */}
 						{this.props.uiSettings.get("heatmapEnabled") && <TrackerAccuracyView hidden={this.props.mode === MODE.PATHVIEW} />}
 						<WebcamStream />
-						{this.state.dialogVisible && <DialogFiles onClose={this.hideDialog} />}
+						{/* {this.state.dialogVisible && <DialogFiles onClose={this.hideDialog} />} */}
 					</>
 				)}
 				<style jsx>{`
