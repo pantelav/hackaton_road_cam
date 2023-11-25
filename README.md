@@ -1,4 +1,4 @@
-# OpenDataCam 3.0.2 – An open source tool to quantify the world
+# Dober Team internation hackaton 2023 (OpenDataCam fork)
 
 OpenDataCam is an open source tool to quantify the world. It quantifies and tracks moving objects with live video analysis. It is designed to be an accessible, affordable and open-source solution to better understand interactions in urban environments.
 

@@ -17,7 +17,7 @@ class ConsoleView extends Component {
               target="_blank"
               href="/console"
             >
-              Download logs
+              Скачать логи
             </a>
           </div>
           <div className="w-full h-full p-5">

@@ -58,29 +58,28 @@ class Menu extends Component {
             />
           </button>
           <div className="p-5 w-full overflow-y-scroll">
-            <h3 className="mb-4 text-2xl font-bold"><a className="mt-2" href="https://github.com/opendatacam/opendatacam" target="_blank">OpenDataCam</a></h3>
+            <h3 className="mb-4 text-2xl font-bold">Dober Team</h3>
             <Toggle
-              label="Counter"
-              description="Count objects on active areas"
+              label="Счетчик"
+              description="Считает объекты в активной зоне"
               enabled={this.props.uiSettings.get('counterEnabled')}
               onChange={(value) => this.props.dispatch(setUiSetting('counterEnabled', value))}
             />
             <Toggle
-              label="Pathfinder"
-              description="Display paths and positions"
+              label="Пути"
+              description="Показывает траекторию путей"
               enabled={this.props.uiSettings.get('pathfinderEnabled')}
               onChange={(value) => this.props.dispatch(setUiSetting('pathfinderEnabled', value))}
             />
-            <Toggle
-              label="Tracker accuracy"
-              description="Display tracker accuracy"
+            {/*<Toggle
+              label="Точность трекера"
+              description="Показывает точность трекера"
               enabled={this.props.uiSettings.get('heatmapEnabled')}
               onChange={(value) => this.props.dispatch(setUiSetting('heatmapEnabled', value))}
-            />
+            /> */}
             <div className="mt-16"></div>
             <Toggle
-              label="Dark mode"
-              description="Turn dark UI elements on"
+              label="Темная тема"
               enabled={this.props.userSettings.get('darkMode')}
               onChange={(darkMode) => {
                 this.props.dispatch(setUserSetting('darkMode', darkMode))
@@ -88,8 +87,8 @@ class Menu extends Component {
             />
             <div className="mb-4 mt-4 flex items-center justify-between">
               <div className="mr-3">
-                <h4 className="text-xl font-bold">Dimmer</h4>
-                <p className="text-xs">Opacity of camera image</p>
+                <h4 className="text-xl font-bold">Прозрачность</h4>
+                <p className="text-xs">Меняет прозрачность изображения камеры</p>
               </div>
               <div className="flex">
                 <button
@@ -114,13 +113,6 @@ class Menu extends Component {
                 </button>
               </div>
             </div>
-          </div>
-          <div className="menu-footer bg-black text-white p-5 w-full">
-              <div className="flex flex-col">
-                  <p>Version {this.props.version}</p>
-                  <a className="mt-2" target="_blank" href="/api/doc">API documentation</a>
-                  <a className="mt-2" href="https://github.com/opendatacam/opendatacam" target="_blank">About</a>
-              </div>
           </div>
         </div>
         <style jsx>{`
