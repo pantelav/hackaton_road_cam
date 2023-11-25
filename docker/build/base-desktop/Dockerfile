@@ -1,6 +1,12 @@
-FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
+FROM nvidia/cuda:11.2.2-cudnn8-devel-ubuntu20.04
 
 ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update \
+      && apt-get install --no-install-recommends --no-install-suggests -y gnupg2 ca-certificates \
+            git build-essential \
+      && rm -rf /var/lib/apt/lists/*
+
 
 # Install  Gstreamer and OpenCV Pre-requisite libs
 RUN  apt-get update -y && apt-get install -y \
@@ -26,13 +32,36 @@ RUN apt-get install -y \
   gcc \
   git
 RUN apt-get update -y && apt-get install -y ffmpeg
-ENV OPENCV_RELEASE_TAG 4.1.1
+ENV OPENCV_RELEASE_TAG 4.2.0
 RUN git clone --depth 1 -b ${OPENCV_RELEASE_TAG}  https://github.com/opencv/opencv.git /var/local/git/opencv
 RUN cd /var/local/git/opencv
 RUN mkdir -p /var/local/git/opencv/build && \
     cd /var/local/git/opencv/build $$ && \
     cmake -D CMAKE_INSTALL_PREFIX=/usr/local CMAKE_BUILD_TYPE=Release -D WITH_GSTREAMER=ON -D WITH_GSTREAMER_0_10=OFF -D WITH_CUDA=OFF -D WITH_TBB=ON -D WITH_LIBV4L=ON WITH_FFMPEG=ON -DOPENCV_GENERATE_PKGCONFIG=ON ..
 RUN  cd /var/local/git/opencv/build && \
-      make -j8 install
+      make -j16 install
+
+
+COPY configure.sh /tmp/
+RUN chmod +x /tmp/configure.sh
+
+ARG SOURCE_BRANCH=master
+ENV SOURCE_BRANCH $SOURCE_BRANCH
+
+ARG SOURCE_COMMIT=96f08de6839eb1c125c7b86bffe1d3dde9570e5b
+ENV SOURCE_COMMIT $SOURCE_COMMIT
+
+ARG CONFIG=gpu-cv-cc86
+
+RUN git clone https://github.com/AlexeyAB/darknet.git && cd darknet \
+      && git checkout $SOURCE_BRANCH \
+      && git reset --hard $SOURCE_COMMIT \
+      && /tmp/configure.sh $CONFIG && make -j 16 \
+      && cp darknet /usr/local/bin \
+      && cd .. && rm -rf darknet
+
+RUN apt-get update \
+      && apt-get install --no-install-recommends --no-install-suggests -y libopencv-highgui4.2 \
+      && rm -rf /var/lib/apt/lists/*
 
 CMD [ "sleep", "infinity" ]
