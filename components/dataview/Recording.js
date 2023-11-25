@@ -8,6 +8,7 @@ import { deleteRecording } from "../../statemanagement/app/HistoryStateManagemen
 import { getCounterColor, getDisplayClasses } from "../../utils/colors.js";
 import { COUNTING_AREA_TYPE } from "../../utils/constants.js";
 import RecordingDeleteConfirmationModal from "../shared/RecordingDeleteConfirmationModal.js";
+import axios from "axios";
 
 dayjs.locale("ru");
 
@@ -16,17 +17,37 @@ class Recording extends PureComponent {
 		super(props);
 
 		this.DISPLAY_CLASSES = getDisplayClasses();
-
+		this.statistic = null;
 		this.state = {
 			showDeleteConfirmationModal: false,
+			data: null,
+			loading: true,
+			error: null,
 		};
 	}
 
 	componentDidMount() {
-    console.log(this.props.countingAreas, 1);
-  }
+		axios.get("/api/recordstats").then((res) => {
+			const data = res.data;
+			const result = data.find((record) => record.id == this.props.id);
+			this.setState({ data: result, loading: false });
+		});
+	}
 
-	componentWillUnmount() {}
+	getClassName(data, counterClass) {
+		if (!data) return "empty";
+		const dataNames = Object.keys(data);
+		return dataNames.find((el) => el == counterClass.class);
+	}
+
+	getTotalCount(counterClass) {
+		return this.state.data[counterClass];
+	}
+
+  getAverageSpeed() {
+    if (isNaN(this.state.data.averageSpeed) || !this.state.data.averageSpeed) return 1;
+    return (parseFloat(this.state.data.averageSpeed) * 3.6).toFixed(1);
+  }
 
 	renderDateEnd(dateEnd, active = false) {
 		if (!active) {
@@ -41,6 +62,10 @@ class Recording extends PureComponent {
 	}
 
 	render() {
+		const { data, loading } = this.state;
+		if (loading) {
+			return <div></div>;
+		}
 		return (
 			<div className="flex flex-initial flex-col recording pl-2 mb-10">
 				<div className="text-inverse flex flex-initial items-center pl-6">
@@ -120,11 +145,12 @@ class Recording extends PureComponent {
 									<div className="flex flex-initial flex-wrap mt-5 w-64">
 										{this.DISPLAY_CLASSES.slice(0, Math.min(this.DISPLAY_CLASSES.length, 6)).map((counterClass) => (
 											<div className="flex w-16 m-1 items-center justify-center" key={counterClass.class}>
-												<h4 className="mr-2">123</h4>
+												<h4 className="mr-2">{this.getTotalCount(counterClass.class)}</h4>
 												<OpenMoji hexcode={counterClass.hexcode} class={counterClass.class} />
 											</div>
 										))}
 									</div>
+									<div>Средняя скорость: {this.getAverageSpeed()} км/ч</div>
 								</div>
 								{/* Конец ИТОГО */}
 							</div>
